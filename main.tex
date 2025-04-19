@@ -1,0 +1,370 @@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% This is a (brief) model paper using the achemso class
+%% The document class accepts keyval options, which should include
+%% the target journal and optionally the manuscript type.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[journal=jacsat,manuscript=article]{achemso}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Place any additional packages needed here.  Only include packages
+%% which are essential, to avoid problems later.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{chemformula} % Formula subscripts using \ch{}
+\usepackage[T1]{fontenc} % Use modern font encodings
+\usepackage{booktabs}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{float} % For precise placement control
+\usepackage{multirow}
+
+
+% \usepackage[singlelinecheck=false]{caption}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% If issues arise when submitting your manuscript, you may want to
+%% un-comment the next line.  This provides information on the
+%% version of every file you have used.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%\listfiles
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Place any additional macros here.  Please use \newcommand* where
+%% possible, and avoid layout-changing macros (which are not used
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand*\mycommand[1]{\texttt{\emph{#1}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Meta-data block
+%% ---------------
+%% Each author should be given as a separate \author command.
+%%
+%% Corresponding authors should have an e-mail given after the author
+%% name as an \email command. Phone and fax numbers can be given
+%% using \phone and \fax, respectively; this information is optional.
+%%
+%% The affiliation of authors is given after the authors; each
+%% \affiliation command applies to all preceding authors not already
+%% assigned an affiliation.
+%%
+%% The affiliation takes an option argument for the short name.  This
+%% will typically be something like "University of Somewhere".
+%%
+%% The \altaffiliation macro should be used for new address, etc.
+%% On the other hand, \alsoaffiliation is used on a per author basis
+%% when authors are associated with multiple institutions.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\author{Chris Hsu}
+\email{chrhsu@uw.edu}
+\affiliation{Department of Genome Sciences, University of Washington, Seattle}
+\author{Michael J. MacCoss}
+\affiliation{Department of Genome Sciences, University of Washington, Seattle}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The document title should be given as usual. Some journals require
+%% a running title from the author: this should be supplied as an
+%% optional argument to \title.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title[]
+  {Instrumentation analysis of a modified Orbitrap Astral for quantitative proteomics - beyond protein IDs}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Some journals require a list of abbreviations or keywords to be
+%% supplied. These should be set up here, and will be printed after
+%% the title and author information, if needed.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\abbreviations{IR,NMR,UV}
+\keywords{American Chemical Society, \LaTeX}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The manuscript does not need to include \maketitle, which is
+%% executed automatically.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The "tocentry" environment can be used to create an entry for the
+%% graphical table of contents. It is given here as some journals
+%% require that it is printed as part of the abstract page. It will
+%% be automatically moved as appropriate.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tocentry}
+
+Some journals require a graphical entry for the Table of Contents.
+This should be laid out ``print ready'' so that the sizing of the
+text is correct.
+
+Inside the \texttt{tocentry} environment, the font used is Helvetica
+8\,pt, as required by \emph{Journal of the American Chemical
+Society}.
+
+The surrounding frame is 9\,cm by 3.5\,cm, which is the maximum
+permitted for  \emph{Journal of the American Chemical Society}
+graphical table of content entries. The box will not resize if the
+content is too big: instead it will overflow the edge of the box.
+
+This box and the associated title will always be printed on a
+separate page at the end of the document.
+
+\end{tocentry}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The abstract environment will automatically gobble the contents
+%% if an abstract is not used by the target journal.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{abstract}
+MS instrumentation continues to improve at an incredible rate. Despite this, quantifying these improvements remains challenging. Historically proteomics performance has been assessed using database search tools and the resulting identifications. These metrics, while useful, provide an incomplete picture of the advancements and don’t assess metrics like transmission, ion beam utilization, quantitative precision and accuracy, etc.. Furthermore, while the precise control of the ion population using methods like automated gain control (AGC) can improve many aspects of qualitative and quantitative peptide measurement, these are non-trivial metrics for the end user to track. We will present new metrics and strategies to compare MS hardware for proteomics and use these methods to assess the performance of a modified Thermo Scientific\textsuperscript{TM} Orbitrap\textsuperscript{TM} Astral\textsuperscript{TM} MS. ******NEED TO CHANGE THIS*****
+\end{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Start the main part of the manuscript here.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+
+The rapid advancement of mass spectrometry (MS) hardware has exposed a critical gap in performance evaluation. Traditional metrics, such as database search-derived peptide and protein identifications, remain rooted in qualitative assessments and don’t necessarily capture differences in instrument performance. New MS instruments continue to improve, generating data with improved sensitivity and speed, but analytical parameters, such as ion utilization efficiency, transmission, and quantitative precision, are rarely assessed\textbf{. }Even widely used methodologies like automatic gain control (AGC), which dynamically adjust ion populations to optimize detection, lack standardized frameworks to compare its effectiveness across platforms. This limits our ability to objectively evaluate hardware advancements. 
+
+A fundamental challenge lies in the calibration of vendor-specific arbitrary intensity units into a universal metric. In an ideal world, we could inject a fixed amount of analyte to allow direct comparisons of the number of ions reaching the detector to compare between different MS instruments. To address this gap, we present a strategy that uses the relationship between the number of ions measured and the precision to derive a correction factor between the intensity reported by the vendor as a metric in ions/sec. We use this calibration factor to compare between different instrument platforms, and we show that Thermo Scientific linear ion traps report an intensity that is well calibrated to ions/sec, whereas orbitrap analyzers need to be divided by a 10-15x to obtain the same measurement. 
+
+We integrated this ion-counting framework into Skyline by leveraging the signal intensity and injection time to measure the ion count for each peptide. We implement the calibration protocol in an app that will ultimately become a Skyline external tool. Furthermore, we implemented new metrics into the Skyline document grid that can be used to evaluate both targeted and untargeted proteomics measurements: 
+
+\begin{enumerate}
+    \item \textbf{Apex total ions}: The total number of ions detected in the mass spectrum at the apex (highest point) of a peptide’s liquid chromatography (LC) elution profile.
+    \item \textbf{LC peak ion count fragment}: The summed ion counts for a peptide across its entire LC elution peak, reflecting total ion capture over time.
+    \item \textbf{Apex LC peak ion count fragment}: The ion count specific to the peptide fragment at the LC peak apex, isolating signal intensity at the point of maximum chromatographic resolution.
+\end{enumerate}
+
+These metrics enable researchers to systematically evaluate how efficiently an instrument detects ions—a parameter critical for optimizing sensitivity, especially in low-abundance proteomics—while also assessing quantitative reproducibility. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% RESULTS HERE %%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Results}
+
+\subsection{Instrument calibration}
+
+% Need to mention IDs here
+To be enable accurate and meaningful comparisons between different mass spectrometers, it is necessary to calibrate the instruments such that the signal intensity measurements are on the same scale -- typically reported in ions per second (ions/sec). Equation (1) models the relationship between signal intensity and ion accumulation. The measured intensity (I) of any given signal in a spectra is proportional to the number of ions \textit{N} divided by the time it takes to accumulate ions in the trap or injection time \textit{t}. The $\alpha$ represents a variable that accounts for instrument-specific scaling (e.g. detector differences or ion trapping). 
+
+\begin{equation}
+  I = \alpha \left( \frac{N}{t} \right) \label{eqn:peak_area_fragment}
+\end{equation}
+
+Since both $\alpha$ and t are constants, the ratio (R) between two given intensities can be defined as the ratio between two reported \textit{N} values in Eq. (2). The assumption is that the two intensities, Ia and Ib, are measured under the same $\alpha$ and \textit{t} conditions. Therefore, these constants cancel out for the same measurements. 
+
+\begin{equation}
+R = \frac{I_a}{I_b} = \frac{N_a}{N_b} \label{eqn:ratio}
+\end{equation}
+
+The equation for the propagation of errors can be applied here to find the uncertainty $\sigma^{2}_{{ R } }$ in the ratio \textit{R}. The uncertainty is scaled by how sensitive the ratio \textit{R} is to changes in the number of ions for Na and Nb shown in Eq. (3). 
+\begin{equation}
+\sigma_R^2 = R^2 \left( \frac{\sigma_{Na}^2}{N_a^2} + \frac{\sigma_{Nb}^2}{N_b^2} \right) \label{eqn:variance}
+\end{equation}
+Ion counting follows Poisson statistics, where the variance is proportional to the mean number of ions in Eq. (3). The uncertainty in the ratio from Eq. (3). can be further simplified by inserting the variance from Eq. (4). The ion count has an inverse relationship with the uncertainty: as Na and Nb increase, the uncertainty decreases. 
+\begin{equation}
+\sigma_N^2 = N 
+\end{equation}
+
+\begin{equation}
+\sigma_P^2 = R^2 \left( \frac{1}{N_a} + \frac{1}{N_b} \right)
+\end{equation}
+
+Using Eq. (1), we can rewrite Eq. (4) in terms of the intensity \textit{I} and time \textit{t}. The $\alpha$ becomes pivotal, as it is a constant and known quantity from the measured quantities. 
+\begin{equation}
+\sigma_p^2 = \bar{R}^2 \left( \frac{1}{\overline{I_a t}} + \frac{1}{\overline{I_b t}} \right) \alpha
+\end{equation}
+
+The total uncertainty $\sigma_T^2$ is the combination of noise from Poisson noise $\sigma_P^2$ and all other noise sources outside of Poisson statistics  $\sigma_O^2$ shown in Eq. (6). And substituting the uncertainty from Poisson noise from Eq. (5) gives us Eq. (7).
+
+\begin{equation}
+    \sigma _ { T } ^ { 2 } = \sigma _ { P } ^ { 2 } + \sigma _ { O } ^ { 2 }
+\end{equation}
+
+\begin{equation}
+\sigma_T^2 = \bar{R}^2 \left( \frac{1}{\overline{I_a t}} + \frac{1}{\overline{I_b t}} \right) \alpha + \sigma_o^2
+\end{equation}
+
+Equation (8) closely resembles the form of a linear equation, \textit{y = mx + b}, where the total variance  $\sigma _ { T } ^ { 2 }$ corresponds to the dependent variable y, the slope is defined by  $\alpha$, the independent variable x is a function of the measured signal intensity \textit{I} and injection time \textit{t}, and the intercept  $\sigma _ { O } ^ { 2 }$ represents other non-Poisson sources of variation.  The final equation allows for an empirical estimation of both instrument-specific alpha scaling factor and noise contributions. A calculated slope or ($\alpha$) factor of 1.0 would indicate a perfect calibration to ions per second. However, $\alpha$ values above 1.0 would suggest that the mass spectrometer overestimates the number of ions, and values less than 1.0 would suggest an underestimation of the number of ions. Having a calibrated value would would allow us to to directly adjust the reported signal intensity for accurate instrument comparisons. 
+
+To perform the calibration experiment (see Methods), we infused three calibration standards — Glu[1]-Fibrinopeptide B and Ultramark 1621 (monitoring ions at \textit{m/z} 1122.0548 and 1822.1693 from Thermo Flexmix) — into multiple Thermo Scientific mass spectrometers. These compounds were selected based on their consistent fragmentation pattern and commercial availability. In particular, Thermo Flexmix standard is regularly used for diagnostics and mass calibration across different instrument platforms, which makes it readily available for others to adopt this approach without requiring additional compound purchases or custom preparations. To ensure accurate ion statistics and reproducibility, 5000 tandem mass spectra (MS/MS) were acquired per instrument, using precursors with a 2+ charge state. Representative MS/MS spectra for each compound are shown in Figure 1. Key fragment ions are highlighted to include key fragments from y- and b- ions for Glu[1]-Fibrinopeptide B (Fig. 1A) and major peaks from Ultramark 1122 and 1822 (Fig. 1B and 1C). The labeled m/z that were used in subsequent ion statistic calculations with Equation (8). 
+\begin{figure}[t] % [t] forces placement at the "top" of the page
+  \includegraphics[width=0.9\textwidth]{figure1.png} % Adjust width as needed
+  \captionsetup{singlelinecheck=false} % Right-aligns the caption
+  \caption{Fragmentation pattern of (a) Glu1-Fibrinopeptide, (b) Ultramark 1122 (UM1122), and (c) fragmentation pattern with highlighted mass-to-charge values that were selected for calibration calculations.}
+  \label{fig:top-right}
+\end{figure}
+
+
+
+\begin{table}
+\caption{Results from the calibration factor $\alpha$ (slope) for various mass spectrometers.}
+\label{tbl:alpha_calibration_table}
+\begin{tabular}{@{}lllllllll@{}}
+\toprule
+Analyzer                  &  & Instrument           &  & Glu1-Fib & UM1122 & UM1822 &  & Average \\ \midrule
+\multirow{2}{*}{Astral}   &  & RG Orbitrap Astral*  &  & 1.33     & 1.16   & 1.23   &  & 1.24    \\
+                          &  & Orbitrap Astral      &  & 1.48     & 1.20   & 1.31   &  & 1.33    \\
+                          &  &                      &  &          &        &        &  &         \\
+\multirow{5}{*}{Orbitrap} &  & RG Orbitrap Astral*  &  & 10.58    & 11.26  & 12.00  &  & 11.28   \\
+                          &  & Orbitrap Astral      &  & 10.49    & 11.02  & 12.30  &  & 11.27   \\
+                          &  & Exploris 480         &  & 11.06    & 11.05  & 12.33  &  & 11.48   \\
+                          &  & Orbitrap Ascend      &  &  9.34     & 10.49  & 9.83   &  & 9.89    \\
+                          &  & Orbitrap Fusion      &  & 15.31    & 14.62  & 15.89  &  & 15.27   \\
+                          &  &                      &  &          &        &        &  &         \\
+\multirow{3}{*}{Ion Trap} &  & Stellar              &  & 1.02     & 1.10   & 1.04   &  & 1.06    \\
+                          &  & Orbitrap Ascend      &  & 0.99     & 0.98   & 0.98   &  & 0.98    \\
+                          &  & Orbitrap Fusion      &  & 1.09     & 1.07   & 1.04   &  & 1.07    \\ \bottomrule
+\end{tabular}
+
+\footnotesize{$*$RG stands for Research Grade}\\
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% TABLE 1 DESCRIPTION %%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Table 1 illustrates calibration factors for various instruments using Glu[1]-Fibrinopeptide B (Glu1-Fib) and Ultramark compounds with masses of 1122 and 1822 m/z (denoted as UM1122 and UM1822). The instruments associated with Astral and ion trap analyzers exhibited alpha factors very close to 1, which indicates that it is reporting an intensity that is well calibrated to ions/sec. The Orbitrap-based analyzers (e.g., Orbitrap Fusion, Orbitrap Ascend, Exploris 480) have calculated 9.85 - 15.27 times lower than the reported intensity to gain the calibrated ions/sec. Interestingly, there is a difference among the orbitrap instruments. The Exploris and Astral share the same internal orbitrap instrumentation, so having similar calibrations is expected. The Ascend also shares the same internal components for the orbitrap with the improved ion beam, but this instrument exhibits a lower calibration value most likely due to software differences. The Fusion Lumos Tribrid, being the oldest model, gave the highest calibration factor of 15.27 with both software and hardware differences. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% SKYLINE TABLE %%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Reporting ion counts in Skyline}
+
+
+
+
+Yesper Olsen describes trapping of Exploris 480 paper. Basically says that pre-accumulation benefits the 200ng+ HeLa samples. 
+Hamish 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%%%% METHODS %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%
+\section{Methods} 
+
+
+\subsection{Proteomics sample preparation} 
+\subsubsection{HeLa samples} 
+
+HeLa cells were grown until 70\% confluent and lysed in a buffer containing 2\% SDS, 100 mM Tris-HCl (pH 8.5), and ThermoFisher protease inhibitors, and the lysates were briefly sonicated using a Branson probe sonicator. The total protein concentration was quantified using the bicinchoninic acid (BCA) assay (Pierce\texttrademark\ BCA kit, Thermo Fisher Scientific) using bovine serum albumin standards \cite{31}. The lysate were diluted to 1~µg/µL, reduced with 20~mM dithiothreitol (DTT), and alkylated with 40~mM iodoacetamide (IAA). For cleanup, proteins were bound to ReSyn hydroxyl magnetic beads at 4~µL beads per 25~µg protein by adding acetonitrile to 70\% final concentration. The beads were washed with three cycles of 95\% ACN and two cycles of 70\% ethanol. Residual ethanol was removed by centrifugation. The washed beads were resuspended in 50~mM ammonium bicarbonate containing trypsin (1:20 enzyme-to-protein ratio) and incubated at 47~°C for 3~hours. After digestion, peptides were eluted from the beads and dried using a speedVac vacuum centrifuge. The dried peptides were stored at $-80~^{\circ}$C until analysis. Prior to LC-MS, the frozen peptides were reconstituted in 0.1\% formic acid to a final concentration of 0.2~µg/µL.
+
+\subsubsection{Plasma Preparation and extracellular vesicle (EV) Enrichment}
+Plasma membrane particle enrichment was performed on a Thermo Scientific KingFisher Flex instrument following the Mag-Net protocol, a magnetic bead approach developed by Wu et al. (2024). Same protocol was described in Heil et al (2023). To start, 100 µL of plasma was first mixed with protease and phosphatase inhibitors and then combined with an equal volume of Binding Buffer (BB) containing 100 mM Bis-Tris Propane, pH 6.3, 150 mM NaCl. MagReSyn strong anion exchange beads (ReSyn Biosciences) were pre-equilibrated twice in Equilibration/Wash Buffer (WB) containing 50 mM Bis-Tris Propane, pH 6.5, 150 mM NaCl). These beads were mixed with gentle agitation and then added to the plasma:BB mixture in a 1:4 bead-to-plasma ratio, followed by a 45-minute incubation at room temperature. Post-incubation, the beads were washed three times with WB for five minutes each using gentle agitation.  Membrane particles bound to the MagReSyn beads were solubilized by a lysis buffer containing 1\% SDS, 50mM Tris at pH 8.5, 10mM TCEP, and 800ng yeast enolase protein. Post reduction, 15mM iodoacetamide was added and incubated for 30 minutes in the dark and quenched with 10mM DTT for 15 minutes. For sample clean-up, protein aggregate capture (PAC) was performed by adding acetonitrile to a final concentration of 70\% to precipitate the proteins at room temperature for 10 minutes. The beads were washed with three times in 95\% acetonitrile and two washes in 70\% ethanol for 2.5 minutes per wash, using the magnetic field on the KingFisher Flex to separate the beads. After clean-up, the proteins were digested at 47°C for 1 hour in 20:1 ratio of trypsin-to-protein containing 100 mM ammonium bicarbonate. Digestion was halted by adding 0.5\% formic acid, and an internal control, Pierce Retention Time Calibrant peptide cocktail (Thermo Fisher Scientific), was included at a final concentration of 50 fmol/uL. The peptides were dried using a speedVac vacuum centrifuge and frozen until analysis.  
+
+
+\subsection{Liquid-chromatography and mass spectrometry}
+
+HeLa, K562, and extracellular vesicle (EV) samples were analyzed using a Thermo Scientific Vanquish Neo UHPLC system coupled to an Orbitrap Astral Zoom mass spectrometer. Peptides were separated via a 24-minute gradient at 1.3 µL/min, with the following stepwise elution profile: 4–6\% Buffer B over 0.7 minutes, 6–6.5\% Buffer B over 0.3 minutes, 6.5–40\% Buffer B over 20 minutes, 40–55\% Buffer B over 0.5 minutes, and 55–99\% Buffer B over 3.5 minutes for column washing. Following separation, data-independent acquisition (DIA) was performed using a cycle comprising a full MS1 scan on the Orbitrap detector at 240,000 resolving power, precursor scan range of 375–985 \textit{m/z}, 50 ms injection time, and standard automatic gain control (AGC). Following each full scan, an MS2 spectrum was collected using the Astral detector with the following parameters: 3 \textit{m/z} non-staggered isolation windows, 6 ms injection time, precursor mass range of 400–900 \textit{m/z}, 27\% higher-energy collisional dissociation (HCD) collision energy, and 200\% AGC target. For isolation window optimization, three configurations were tested while maintaining consistent cycle times: 2 \textit{m/z} isolation windows with 4 ms injection time, 3 \textit{m/z} windows with 6 ms injection time, and 4 \textit{m/z} windows with 8 ms injection time. For the Orbitrap Astral (non-Zoom), the same configurations were used with the same LC and column setup. The expected chromatographic peak width was set to 6 seconds for all sample runs.
+
+
+\subsection{Data analysis}
+
+\subsubsection{Library generation and search}
+An \textit{in-silico} spectral library was generated using Carafe by processing a representative HeLa sample run. Following library generation, all data files were searched with DIA-NN (v2.1.0). For peptide identification, the precursor ions were modeled with the following parameters: trypsin protease specificity with 1 missed cleavage allowed, fixed carbamidomethylation of cysteines, and precursor charge range of 2+ to 3+. The search resulting in a spectral library was exported in a format compatible with Skyline for downstream analysis. The settings of the DIA-NN algorithm included match-between-runs (MBR),  "Protein inference", and "Unrelated Runs". Machine learning-based scoring was enabled using "NNs (cross-validated)", Cross-run normalization was set to "Global", and library generation utilized "IDs profiling". 
+
+\subsubsection{Skyline settings for ion counting}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%%%% DISCUSSION %%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Discussion}
+
+
+
+
+\section{Extra information when writing JACS Communications}
+
+When producing communications for \emph{J.~Am.\ Chem.\ Soc.}, the
+class will automatically lay the text out in the style of the
+journal. This gives a guide to the length of text that can be
+accommodated in such a publication. There are some points to bear in
+mind when preparing a JACS Communication in this way.  The layout
+produced here is a \emph{model} for the published result, and the
+outcome should be taken as a \emph{guide} to the final length. The
+spacing and sizing of graphical content is an area where there is
+some flexibility in the process.  You should not worry about the
+space before and after graphics, which is set to give a guide to the
+published size. This is very dependant on the final published layout.
+
+You should be able to use the same source to produce a JACS
+Communication and a normal article.  For example, this demonstration
+file will work with both \texttt{type=article} and
+\texttt{type=communication}. Sections and any abstract are
+automatically ignored, although you will get warnings to this effect.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The "Acknowledgement" section can be given in all manuscript
+%% classes.  This should be given within the "acknowledgement"
+%% environment, which will make the correct section or running title.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{acknowledgement}
+
+Please use ``The authors thank \ldots'' rather than ``The
+authors would like to thank \ldots''.
+
+The author thanks Mats Dahlgren for version one of \textsf{achemso},
+and Donald Arseneau for the code taken from \textsf{cite} to move
+citations after punctuation. Many users have provided feedback on the
+class, which is reflected in all of the different demonstrations
+shown in this document.
+
+\end{acknowledgement}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The same is true for Supporting Information, which should use the
+%% suppinfo environment.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{suppinfo}
+
+A listing of the contents of each file supplied as Supporting Information
+should be included. For instructions on what should be included in the
+Supporting Information as well as how to prepare this material for
+publications, refer to the journal's Instructions for Authors.
+
+The following files are available free of charge.
+\begin{itemize}
+  \item Filename: brief description
+  \item Filename: brief description
+\end{itemize}
+
+\end{suppinfo}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The appropriate \bibliography command should be placed here.
+%% Notice that the class file automatically sets \bibliographystyle
+%% and also names the section correctly.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliography{achemso-demo}
+
+\end{document}
+
+
+
+
+
+
+
+% EXTRA TEXT
+
+Table 1 shows a collection of alpha values for different instruments and their respective analyzers for three measured analytes: Glu[1]-Fibrinopeptide B, Ultramark compound precursor 1222 m/z, and Ultramark compound precursor 1822 m/z. The Glu[1]-Fibrinopeptide B was previously described in Jesse's paper, so that is a control, but it may not be readily available for many labs to prepare and use. Our rationale for using the Ultramark compounds is that they are easily accessible for many Thermo Scientific mass spectrometers as a calibration mixture (Flexmix ID NUMBER HERE). 
