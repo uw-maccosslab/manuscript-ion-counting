@@ -128,21 +128,92 @@ The rapid advancement of mass spectrometry (MS) hardware has exposed a critical 
 
 A fundamental challenge lies in the calibration of vendor-specific arbitrary intensity units into a universal metric. In an ideal world, we could inject a fixed amount of analyte to allow direct comparisons of the number of ions reaching the detector to compare between different MS instruments. To address this gap, we present a strategy that uses the relationship between the number of ions measured and the precision to derive a correction factor between the intensity reported by the vendor as a metric in ions/sec. We use this calibration factor to compare between different instrument platforms, and we show that Thermo Scientific linear ion traps report an intensity that is well calibrated to ions/sec, whereas orbitrap analyzers need to be divided by a 10-15x to obtain the same measurement. 
 
-We integrated this ion-counting framework into Skyline by leveraging the signal intensity and injection time to measure the ion count for each peptide. We implement the calibration protocol in an app that will ultimately become a Skyline external tool. Furthermore, we implemented new metrics into the Skyline document grid that can be used to evaluate both targeted and untargeted proteomics measurements: 
-
-\begin{enumerate}
-    \item \textbf{Apex total ions}: The total number of ions detected in the mass spectrum at the apex (highest point) of a peptide’s liquid chromatography (LC) elution profile.
-    \item \textbf{LC peak ion count fragment}: The summed ion counts for a peptide across its entire LC elution peak, reflecting total ion capture over time.
-    \item \textbf{Apex LC peak ion count fragment}: The ion count specific to the peptide fragment at the LC peak apex, isolating signal intensity at the point of maximum chromatographic resolution.
-\end{enumerate}
+We integrated this ion-counting framework into Skyline by leveraging the signal intensity and injection time to measure the ion count for each peptide. We implement the calibration protocol in an app that will ultimately become a Skyline external tool. Furthermore, we implemented new metrics into the Skyline document grid that can be used to evaluate both targeted and untargeted proteomics measurements:
 
 These metrics enable researchers to systematically evaluate how efficiently an instrument detects ions—a parameter critical for optimizing sensitivity, especially in low-abundance proteomics—while also assessing quantitative reproducibility. 
+
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Figure1_schematic_temp.png}
+   \caption{Modifications to improve the existing Orbitrap Astral. The addition of the pre-accumulation step, and the improvement of signal processing.}
+    \label{fig:enter-label}
+\end{figure}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % RESULTS HERE %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+This is just some random text here as a filler.
+
+
 \section{Results}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1.1\linewidth]{Figure2_Protein_Precursor_IDs.png}
+    \caption{Evaluation of precursor and protein identifications from various isolation window and input HeLa peptides.}
+    \label{fig:enter-label}
+\end{figure}
+
+\begin{enumerate}
+    \item The Astral mass spectrometer consistently outperforms the Orbitrap in both precursor and protein identification rates across all tested conditions, with the performance gap widening at higher input masses.
+    \item Both instruments show diminishing returns in identification rates as input mass increases beyond 1000 ng, suggesting an approaching saturation point in detection capabilities.
+    \item Wider isolation windows (3-4 m/z compared to 2 m/z) result in slightly lower identification rates for both instruments, indicating a trade-off between isolation width and specificity.
+    \item The performance advantage of Actis over Astral remains consistent across different injection times (4, 6, and 8 ms), demonstrating that the superior identification capability is inherent to the instrument rather than dependent on specific acquisition parameters.
+\end{enumerate}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Figure3_peptide_CV.png}
+    \caption{Evaluation of quantitative precision between Actis and Astral. }
+    \label{fig:enter-label}
+\end{figure}
+
+
+
+\begin{enumerate}
+    \item Overall reproducibility trend: Both instruments show improved reproducibility (lower CV\%) as sample mass increases from 50ng to 2000ng, which is expected behavior but important to document.
+    \item Instrument comparison: The Astral consistently demonstrates lower median CV\% values than the Orbitrap across nearly all mass points and isolation windows, suggesting better run-to-run reproducibility.
+    \item Distribution patterns: The violin plot shapes show that the Actis has more consistent performance (narrower distribution of CV values), particularly at higher masses, while the Orbitrap Astral shows wider variation in reproducibility.
+    \item Isolation window effect: Interestingly, the isolation window size (2, 3, or 4 m/z) appears to have minimal impact on reproducibility for both instruments, which is somewhat unexpected. 
+\end{enumerate}
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%%%% METHODS %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Methods} 
+
+\subsection{Proteomics sample preparation} 
+\subsubsection{HeLa samples} 
+
+HeLa cells were grown until 70\% confluent and lysed in a buffer containing 2\% SDS, 100 mM Tris-HCl (pH 8.5), and ThermoFisher protease inhibitors, and the lysates were briefly sonicated using a Branson probe sonicator. The total protein concentration was quantified using the bicinchoninic acid (BCA) assay (Pierce\texttrademark\ BCA kit, Thermo Fisher Scientific) using bovine serum albumin standards \cite{31}. The lysate were diluted to 1~µg/µL, reduced with 20~mM dithiothreitol (DTT), and alkylated with 40~mM iodoacetamide (IAA). For cleanup, proteins were bound to ReSyn hydroxyl magnetic beads at 4~µL beads per 25~µg protein by adding acetonitrile to 70\% final concentration. The beads were washed with three cycles of 95\% ACN and two cycles of 70\% ethanol. Residual ethanol was removed by centrifugation. The washed beads were resuspended in 50~mM ammonium bicarbonate containing trypsin (1:20 enzyme-to-protein ratio) and incubated at 47~°C for 3~hours. After digestion, peptides were eluted from the beads and dried using a speedVac vacuum centrifuge. The dried peptides were stored at $-80~^{\circ}$C until analysis. Prior to LC-MS, the frozen peptides were reconstituted in 0.1\% formic acid to a final concentration of 0.2~µg/µL.
+
+\subsubsection{Plasma Preparation and extracellular vesicle (EV) Enrichment}
+Plasma membrane particle enrichment was performed on a Thermo Scientific KingFisher Flex instrument following the Mag-Net protocol, a magnetic bead approach developed by Wu et al. (2024). Same protocol was described in Heil et al (2023). To start, 100 µL of plasma was first mixed with protease and phosphatase inhibitors and then combined with an equal volume of Binding Buffer (BB) containing 100 mM Bis-Tris Propane, pH 6.3, 150 mM NaCl. MagReSyn strong anion exchange beads (ReSyn Biosciences) were pre-equilibrated twice in Equilibration/Wash Buffer (WB) containing 50 mM Bis-Tris Propane, pH 6.5, 150 mM NaCl). These beads were mixed with gentle agitation and then added to the plasma:BB mixture in a 1:4 bead-to-plasma ratio, followed by a 45-minute incubation at room temperature. Post-incubation, the beads were washed three times with WB for five minutes each using gentle agitation.  Membrane particles bound to the MagReSyn beads were solubilized by a lysis buffer containing 1\% SDS, 50mM Tris at pH 8.5, 10mM TCEP, and 800ng yeast enolase protein. Post reduction, 15mM iodoacetamide was added and incubated for 30 minutes in the dark and quenched with 10mM DTT for 15 minutes. For sample clean-up, protein aggregate capture (PAC) was performed by adding acetonitrile to a final concentration of 70\% to precipitate the proteins at room temperature for 10 minutes. The beads were washed with three times in 95\% acetonitrile and two washes in 70\% ethanol for 2.5 minutes per wash, using the magnetic field on the KingFisher Flex to separate the beads. After clean-up, the proteins were digested at 47°C for 1 hour in 20:1 ratio of trypsin-to-protein containing 100 mM ammonium bicarbonate. Digestion was halted by adding 0.5\% formic acid, and an internal control, Pierce Retention Time Calibrant peptide cocktail (Thermo Fisher Scientific), was included at a final concentration of 50 fmol/uL. The peptides were dried using a speedVac vacuum centrifuge and frozen until analysis.  
+
+
+\subsection{Liquid-chromatography and mass spectrometry}
+
+HeLa, K562, and extracellular vesicle (EV) samples were analyzed using a Thermo Scientific Vanquish Neo UHPLC system coupled to an Orbitrap Astral Zoom mass spectrometer. Peptides were separated via a 24-minute gradient at 1.3 µL/min, with the following stepwise elution profile: 4–6\% Buffer B over 0.7 minutes, 6–6.5\% Buffer B over 0.3 minutes, 6.5–40\% Buffer B over 20 minutes, 40–55\% Buffer B over 0.5 minutes, and 55–99\% Buffer B over 3.5 minutes for column washing. Following separation, data-independent acquisition (DIA) was performed using a cycle comprising a full MS1 scan on the Orbitrap detector at 240,000 resolving power, precursor scan range of 375–985 \textit{m/z}, 50 ms injection time, and standard automatic gain control (AGC). Following each full scan, an MS2 spectrum was collected using the Astral detector with the following parameters: 3 \textit{m/z} non-staggered isolation windows, 6 ms injection time, precursor mass range of 400–900 \textit{m/z}, 27\% higher-energy collisional dissociation (HCD) collision energy, and 200\% AGC target. For isolation window optimization, three configurations were tested while maintaining consistent cycle times: 2 \textit{m/z} isolation windows with 4 ms injection time, 3 \textit{m/z} windows with 6 ms injection time, and 4 \textit{m/z} windows with 8 ms injection time. For the Orbitrap Astral (non-Zoom), the same configurations were used with the same LC and column setup. The expected chromatographic peak width was set to 6 seconds for all sample runs.
+
+
+\subsection{Data analysis}
+
+\subsubsection{Library generation and search}
+An \textit{in-silico} spectral library was generated using Carafe by processing a representative HeLa sample run. Following library generation, all data files were searched with DIA-NN (v2.1.0). For peptide identification, the precursor ions were modeled with the following parameters: trypsin protease specificity with 1 missed cleavage allowed, fixed carbamidomethylation of cysteines, and precursor charge range of 2+ to 3+. The search resulting in a spectral library was exported in a format compatible with Skyline for downstream analysis. The settings of the DIA-NN algorithm included match-between-runs (MBR),  "Protein inference", and "Unrelated Runs". Machine learning-based scoring was enabled using "NNs (cross-validated)", Cross-run normalization was set to "Global", and library generation utilized "IDs profiling". 
+
 
 \subsection{Instrument calibration}
 
@@ -189,7 +260,9 @@ The total uncertainty $\sigma_T^2$ is the combination of noise from Poisson nois
 
 Equation (8) closely resembles the form of a linear equation, \textit{y = mx + b}, where the total variance  $\sigma _ { T } ^ { 2 }$ corresponds to the dependent variable y, the slope is defined by  $\alpha$, the independent variable x is a function of the measured signal intensity \textit{I} and injection time \textit{t}, and the intercept  $\sigma _ { O } ^ { 2 }$ represents other non-Poisson sources of variation.  The final equation allows for an empirical estimation of both instrument-specific alpha scaling factor and noise contributions. A calculated slope or ($\alpha$) factor of 1.0 would indicate a perfect calibration to ions per second. However, $\alpha$ values above 1.0 would suggest that the mass spectrometer overestimates the number of ions, and values less than 1.0 would suggest an underestimation of the number of ions. Having a calibrated value would would allow us to to directly adjust the reported signal intensity for accurate instrument comparisons. 
 
-To perform the calibration experiment (see Methods), we infused three calibration standards — Glu[1]-Fibrinopeptide B and Ultramark 1621 (monitoring ions at \textit{m/z} 1122.0548 and 1822.1693 from Thermo Flexmix) — into multiple Thermo Scientific mass spectrometers. These compounds were selected based on their consistent fragmentation pattern and commercial availability. In particular, Thermo Flexmix standard is regularly used for diagnostics and mass calibration across different instrument platforms, which makes it readily available for others to adopt this approach without requiring additional compound purchases or custom preparations. To ensure accurate ion statistics and reproducibility, 5000 tandem mass spectra (MS/MS) were acquired per instrument, using precursors with a 2+ charge state. Representative MS/MS spectra for each compound are shown in Figure 1. Key fragment ions are highlighted to include key fragments from y- and b- ions for Glu[1]-Fibrinopeptide B (Fig. 1A) and major peaks from Ultramark 1122 and 1822 (Fig. 1B and 1C). The labeled m/z that were used in subsequent ion statistic calculations with Equation (8). 
+To perform the calibration experiment (see Methods), we infused three calibration standards — Glu[1]-Fibrinopeptide B and Ultramark 1621 (monitoring ions at \textit{m/z} 1122.0548 and 1822.1693 from Thermo Flexmix) — into multiple Thermo Scientific mass spectrometers. These compounds were selected based on their consistent fragmentation pattern and commercial availability. In particular, Thermo Flexmix standard is regularly used for diagnostics and mass calibration across different instrument platforms, which makes it readily available for others to adopt this approach without requiring additional compound purchases or custom preparations. To ensure accurate ion statistics and reproducibility, 5000 tandem mass spectra (MS/MS) were acquired per instrument, using precursors with a 2+ charge state. Representative MS/MS spectra for each compound are shown in Figure 1. Key fragment ions are highlighted to include key fragments from y- and b- ions for Glu[1]-Fibrinopeptide B (Fig. 1A) and major peaks from Ultramark 1122 and 1822 (Fig. 1B and 1C). The labeled m/z that were used in subsequent ion statistic calculations with Equation (8).
+
+
 \begin{figure}[t] % [t] forces placement at the "top" of the page
   \includegraphics[width=0.9\textwidth]{figure1.png} % Adjust width as needed
   \captionsetup{singlelinecheck=false} % Right-aligns the caption
@@ -255,32 +328,7 @@ Hamish
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%
-%%%% METHODS %%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%
-\section{Methods} 
 
-
-\subsection{Proteomics sample preparation} 
-\subsubsection{HeLa samples} 
-
-HeLa cells were grown until 70\% confluent and lysed in a buffer containing 2\% SDS, 100 mM Tris-HCl (pH 8.5), and ThermoFisher protease inhibitors, and the lysates were briefly sonicated using a Branson probe sonicator. The total protein concentration was quantified using the bicinchoninic acid (BCA) assay (Pierce\texttrademark\ BCA kit, Thermo Fisher Scientific) using bovine serum albumin standards \cite{31}. The lysate were diluted to 1~µg/µL, reduced with 20~mM dithiothreitol (DTT), and alkylated with 40~mM iodoacetamide (IAA). For cleanup, proteins were bound to ReSyn hydroxyl magnetic beads at 4~µL beads per 25~µg protein by adding acetonitrile to 70\% final concentration. The beads were washed with three cycles of 95\% ACN and two cycles of 70\% ethanol. Residual ethanol was removed by centrifugation. The washed beads were resuspended in 50~mM ammonium bicarbonate containing trypsin (1:20 enzyme-to-protein ratio) and incubated at 47~°C for 3~hours. After digestion, peptides were eluted from the beads and dried using a speedVac vacuum centrifuge. The dried peptides were stored at $-80~^{\circ}$C until analysis. Prior to LC-MS, the frozen peptides were reconstituted in 0.1\% formic acid to a final concentration of 0.2~µg/µL.
-
-\subsubsection{Plasma Preparation and extracellular vesicle (EV) Enrichment}
-Plasma membrane particle enrichment was performed on a Thermo Scientific KingFisher Flex instrument following the Mag-Net protocol, a magnetic bead approach developed by Wu et al. (2024). Same protocol was described in Heil et al (2023). To start, 100 µL of plasma was first mixed with protease and phosphatase inhibitors and then combined with an equal volume of Binding Buffer (BB) containing 100 mM Bis-Tris Propane, pH 6.3, 150 mM NaCl. MagReSyn strong anion exchange beads (ReSyn Biosciences) were pre-equilibrated twice in Equilibration/Wash Buffer (WB) containing 50 mM Bis-Tris Propane, pH 6.5, 150 mM NaCl). These beads were mixed with gentle agitation and then added to the plasma:BB mixture in a 1:4 bead-to-plasma ratio, followed by a 45-minute incubation at room temperature. Post-incubation, the beads were washed three times with WB for five minutes each using gentle agitation.  Membrane particles bound to the MagReSyn beads were solubilized by a lysis buffer containing 1\% SDS, 50mM Tris at pH 8.5, 10mM TCEP, and 800ng yeast enolase protein. Post reduction, 15mM iodoacetamide was added and incubated for 30 minutes in the dark and quenched with 10mM DTT for 15 minutes. For sample clean-up, protein aggregate capture (PAC) was performed by adding acetonitrile to a final concentration of 70\% to precipitate the proteins at room temperature for 10 minutes. The beads were washed with three times in 95\% acetonitrile and two washes in 70\% ethanol for 2.5 minutes per wash, using the magnetic field on the KingFisher Flex to separate the beads. After clean-up, the proteins were digested at 47°C for 1 hour in 20:1 ratio of trypsin-to-protein containing 100 mM ammonium bicarbonate. Digestion was halted by adding 0.5\% formic acid, and an internal control, Pierce Retention Time Calibrant peptide cocktail (Thermo Fisher Scientific), was included at a final concentration of 50 fmol/uL. The peptides were dried using a speedVac vacuum centrifuge and frozen until analysis.  
-
-
-\subsection{Liquid-chromatography and mass spectrometry}
-
-HeLa, K562, and extracellular vesicle (EV) samples were analyzed using a Thermo Scientific Vanquish Neo UHPLC system coupled to an Orbitrap Astral Zoom mass spectrometer. Peptides were separated via a 24-minute gradient at 1.3 µL/min, with the following stepwise elution profile: 4–6\% Buffer B over 0.7 minutes, 6–6.5\% Buffer B over 0.3 minutes, 6.5–40\% Buffer B over 20 minutes, 40–55\% Buffer B over 0.5 minutes, and 55–99\% Buffer B over 3.5 minutes for column washing. Following separation, data-independent acquisition (DIA) was performed using a cycle comprising a full MS1 scan on the Orbitrap detector at 240,000 resolving power, precursor scan range of 375–985 \textit{m/z}, 50 ms injection time, and standard automatic gain control (AGC). Following each full scan, an MS2 spectrum was collected using the Astral detector with the following parameters: 3 \textit{m/z} non-staggered isolation windows, 6 ms injection time, precursor mass range of 400–900 \textit{m/z}, 27\% higher-energy collisional dissociation (HCD) collision energy, and 200\% AGC target. For isolation window optimization, three configurations were tested while maintaining consistent cycle times: 2 \textit{m/z} isolation windows with 4 ms injection time, 3 \textit{m/z} windows with 6 ms injection time, and 4 \textit{m/z} windows with 8 ms injection time. For the Orbitrap Astral (non-Zoom), the same configurations were used with the same LC and column setup. The expected chromatographic peak width was set to 6 seconds for all sample runs.
-
-
-\subsection{Data analysis}
-
-\subsubsection{Library generation and search}
-An \textit{in-silico} spectral library was generated using Carafe by processing a representative HeLa sample run. Following library generation, all data files were searched with DIA-NN (v2.1.0). For peptide identification, the precursor ions were modeled with the following parameters: trypsin protease specificity with 1 missed cleavage allowed, fixed carbamidomethylation of cysteines, and precursor charge range of 2+ to 3+. The search resulting in a spectral library was exported in a format compatible with Skyline for downstream analysis. The settings of the DIA-NN algorithm included match-between-runs (MBR),  "Protein inference", and "Unrelated Runs". Machine learning-based scoring was enabled using "NNs (cross-validated)", Cross-run normalization was set to "Global", and library generation utilized "IDs profiling". 
-
-\subsubsection{Skyline settings for ion counting}
 
 
 
