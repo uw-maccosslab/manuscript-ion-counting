@@ -61,7 +61,7 @@
 \affiliation{Department of Genome Sciences, University of Washington, Seattle}
 \author{Michael J. MacCoss}
 \affiliation{Department of Genome Sciences, University of Washington, Seattle}
-
+%lets add the authors that Hamish wanted added ... that was in the document he sent with the description of the new instrument features.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% The document title should be given as usual. Some journals require
@@ -76,8 +76,9 @@
 %% supplied. These should be set up here, and will be printed after
 %% the title and author information, if needed.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\abbreviations{IR,NMR,UV}
-\keywords{American Chemical Society, \LaTeX}
+\abbreviations{MS, LC-MS, DIA, HCD, AGC, CV\%}
+
+\keywords{proteomics, Orbitrap, instrument evaluation, \LaTeX}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% The manuscript does not need to include \maketitle, which is
@@ -147,7 +148,7 @@ These metrics enable researchers to systematically evaluate how efficiently an i
 
 
 
-\section{Results}
+\section{Results}  % for ACS journals like JPR this will need to go after the methods section.
 
 \begin{figure}
     \centering
@@ -159,7 +160,7 @@ These metrics enable researchers to systematically evaluate how efficiently an i
 \begin{enumerate}
     \item The Actis mass spectrometer consistently outperforms the Astral in both precursor and protein identification rates across all tested conditions, with the performance gap widening at higher input masses.
     \item Both instruments show diminishing returns in identification rates as input mass increases beyond 1000 ng, suggesting an approaching saturation point in detection capabilities.
-    \item Wider isolation windows (3-4 m/z compared to 2 m/z) result in slightly lower identification rates for both instruments, indicating a trade-off between isolation width and specificity.
+    \item Wider isolation windows (3-4 m/z compared to 2 m/z) result in slightly lower identification rates for both instruments, indicating a trade-off between isolation width and specificity. %lets use the "detection" language as opposed to "identification" languange. We are detecting peptides with DIA-NN not identifying them.
     \item The performance advantage of Actis over Astral remains consistent across different injection times (4, 6, and 8 ms), demonstrating that the superior identification capability is inherent to the instrument rather than dependent on specific acquisition parameters.
 \end{enumerate}
 
