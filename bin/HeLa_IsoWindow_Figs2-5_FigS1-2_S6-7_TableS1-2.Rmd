@@ -863,7 +863,7 @@ fig2_final = (Figure2ABC / Figure2DE) + plot_annotation(tag_levels = "A") &
 
 fig2_final
 
-ggsave("../figures/Figure_2.png", plot = fig2_final, width = 14, height = 12, dpi = 700)
+ggsave("../figures/Figure_2.pdf", plot = fig2_final, width = 14, height = 12, dpi = 1200)
 
 
 ```
@@ -874,6 +874,24 @@ ggsave("../figures/Figure_2.png", plot = fig2_final, width = 14, height = 12, dp
 ## Figure S1: Injection time
 ```{r, fig.height=10, fig.width=12}
 
+
+combined_200ng_mzML = read.csv("../data/acquisition_rate/hela_files/combined_200ng_mzML.csv")
+combined_500ng_mzML = read.csv("../data/acquisition_rate/hela_files/combined_500ng_mzML.csv")
+combined_1000ng_mzML = read.csv("../data/acquisition_rate/hela_files/combined_1000ng_mzML.csv")
+combined_2000ng_mzML = read.csv("../data/acquisition_rate/hela_files/combined_2000ng_mzML.csv")
+
+
+combined_mzML_df = bind_rows(combined_200ng_mzML,
+                        combined_500ng_mzML,
+                        combined_1000ng_mzML,
+                        combined_2000ng_mzML)
+
+
+dt_mzML <- as.data.table(combined_mzML_df)
+
+dt_mzML$instrument[dt_mzML$instrument == "Actis"] <- "Prototype"
+
+
 dt_mzML_IT = dt_mzML
 dt_mzML_IT$instrument <- factor(dt_mzML$instrument, levels = c("Prototype", "Astral"))
 dt_mzML_IT$mass <- paste0(as.character(dt_mzML$mass), "ng")
@@ -883,6 +901,8 @@ dt_mzML_IT$mass <- factor(dt_mzML_IT$mass, levels = c("200ng", "500ng", "1000ng"
 dt_mzML_IT$isoWindow <- ifelse(grepl("2mz 4msIT", dt_mzML_IT$isoWindow, ignore.case = TRUE), "2 Th with 4 ms IT",
                      ifelse(grepl("3mz 6msIT", dt_mzML_IT$isoWindow, ignore.case = TRUE), "3 Th with 6 ms IT",
                      ifelse(grepl("4mz 8msIT", dt_mzML_IT$isoWindow, ignore.case = TRUE), "4 Th with 8 ms IT",NA)))
+
+
 
 
 
@@ -954,7 +974,7 @@ SuppFigure1 = SuppFigure1_made + plot_annotation(tag_levels = "A") &
 
 SuppFigure1
 
-ggsave("../figures/Figure_S1.png", plot = SuppFigure1, width = 12, height = 10, dpi = 700)
+ggsave("../figures/Figure_S1.pdf", plot = SuppFigure1, width = 12, height = 10, dpi = 700)
 
 ```
 
@@ -1267,7 +1287,7 @@ supp_fig_2 <- (pep_rank_plt / prot_rank_plt) +
 
 supp_fig_2
 
-ggsave("../figures/supp_Figure_2.png", plot = supp_fig_2, width = 10, height = 8, dpi = 700)
+ggsave("../figures/supp_Figure_2.pdf", plot = supp_fig_2, width = 10, height = 8, dpi = 700)
 
 
 
@@ -1662,6 +1682,9 @@ figure3_squished <- (precursor_plt_sigfig + protein_plt_sigfig) /
 
 
 figure3_squished
+
+
+ggsave("../figures/Figure3.pdf", width =  18, height=12, dpi = 1200)
 
 ```
 
@@ -2117,7 +2140,7 @@ figure4 <- (figure4A / figure4B) +
 
 figure4
 
-ggsave("../figures/Figure_4.png", plot = figure4, width = 12, height = 13, dpi = 700)
+ggsave("../figures/Figure_4.pdf", plot = figure4, width = 12, height = 13, dpi = 700)
 
 
 
@@ -2711,7 +2734,11 @@ p_overlay = ggplot(df_overlay, aes(x = Mean / ifelse(instrument == "Astral", 1.5
     legend.text = element_text(size = 16),
     strip.text = element_text(size = 14),
     legend.title=element_blank(),
-    legend.position = "top")+ guides(color = "none")
+    legend.position = "top")+ guides(color = "none") +
+  guides(
+    color = "none",
+    fill = guide_legend(override.aes = list(alpha = 1))  # <— solid legend color
+  )
 
 
 
@@ -3123,7 +3150,7 @@ figure5_mode <- (Figure5A / (Figure5B + Figure5C)) +
 figure5_mode
 
 
-ggsave("../figures/Figure5.png", plot = figure5_mode, width = 12, height = 14, dpi = 1000)
+ggsave("../figures/Figure_5.pdf", plot = figure5_mode, width = 12, height = 14, dpi = 1000)
 
 
 ```
@@ -3227,7 +3254,7 @@ figure6_supp_apex = ggplot(df_apex_ions_combined1, aes(x = factor(mass), y = Mea
 
 figure6_supp_apex
 
-ggsave("../figures/Figure_S6_supp_apex.png", plot = figure6_supp_apex, width = 12, height = 8, dpi = 700)
+ggsave("../figures/Figure_S6_supp_apex.pdf", plot = figure6_supp_apex, width = 12, height = 8, dpi = 700)
 
 
 
@@ -3266,7 +3293,7 @@ df_ratios <- df_wide %>%
 
 
 
-df_ratios$mass <- paste0(as.character(df_ratios$mass), "ng")
+#df_ratios$mass <- paste0(as.character(df_ratios$mass), "ng")
 df_ratios$mass <- factor(df_ratios$mass, levels = c("2000ng", "1000ng", "500ng", "200ng", "50ng"))
 
 summary_ions <- df_ratios %>%
@@ -3306,7 +3333,7 @@ my_13_colors <- c(
 
 
 # Plot just 500ng
-figure5_supp_full_dist = ggplot(df_ratios, aes(x = Prototype, y = log2MeanRatio)) +
+figureS7_supp_full_dist = ggplot(df_ratios, aes(x = Prototype, y = log2MeanRatio)) +
   geom_density_2d_filled(contour_var = "density", bins = 11) +
 
   # Reference line at log2(1)
@@ -3379,10 +3406,10 @@ figure5_supp_full_dist = ggplot(df_ratios, aes(x = Prototype, y = log2MeanRatio)
   ) + theme(plot.title = element_text(size = 22, hjust = 0)) + annotation_logticks(sides = "b")
  
 
-figure5_supp_full_dist
+figureS7_supp_full_dist
 
 
-ggsave("../figures/Figure_S5.png", plot = figure5_supp_full_dist, width = 12, height = 14, dpi = 700)
+ggsave("../figures/Figure_S7.pdf", plot = figureS7_supp_full_dist, width = 12, height = 14, dpi = 700)
 
 
 ```
