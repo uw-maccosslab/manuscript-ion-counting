@@ -1,0 +1,3 @@
+The CSVs are located in panorama here: https://panoramaweb.org/Panorama%20Public/2025/MacCoss%20-%20Prototype%20Orbitrap%20Astral%20manuscript/project-begin.view
+
+If you navigate to the top right corner of the webpage, there should be a "Raw Files" button that will lead you to the dataset. 
